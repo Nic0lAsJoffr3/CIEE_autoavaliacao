@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101114">
+  <meta name="description" content="Auto avaliação CIEE: uma ferramenta para reflexão, autoconhecimento e desenvolvimento pessoal.">
+<link rel="shortcut icon" type="image/x-icon" href="assets/favicon.png">
+  <title>Auto avaliação CIEE</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <!-- CABEÇALHO -->
+    <header class="topbar">
+      <a
+        class="brand"
+        href="#"
+        id="brand-home"
+        aria-label="Auto avaliação CIEE, início"
+      >
+                            <div class="art-main-circle">
+                        <div class="brand-mark ">
+                            <img src="assets/ciee-logo.png" alt="CIEE">
+                        </div>
+                    </div>
+        <span>auto avaliação<span class="brand-dot"> CIEE.</span></span>
+      </a>
+
+      <button
+        class="icon-button"
+        id="history-shortcut"
+        type="button"
+        aria-label="Ver histórico"
+        title="Histórico"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 12a9 9 0 1 0 2.64-6.36L3 8"/>
+          <path d="M3 3v5h5M12 7v5l3 2"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main id="app" tabindex="-1">
+
+      <!-- TELA INICIAL -->
+      <section
+        class="view active"
+        id="home-view"
+        aria-labelledby="home-title"
+      >
+        <div class="eyebrow">
+          <span class="eyebrow-line"></span>
+          UM MOMENTO PARA VOCÊ
+        </div>
+
+        <div class="hero">
+
+          <div class="hero-copy">
+            <p class="overline">AUTOCONHECIMENTO / 01</p>
+
+            <h1 id="home-title">
+              Olhe para si<br>
+              com <em>honestidade.</em>
+            </h1>
+
+            <p class="hero-description">
+              Uma pausa para entender onde você está, reconhecer o que já
+              construiu e descobrir o que merece sua atenção.
+            </p>
+
+            <button
+              class="button button-primary"
+              id="start-button"
+              type="button"
+            >
+              Começar avaliação
+              <span aria-hidden="true">↗</span>
+            </button>
+
+            <div class="meta-row">
+              <span>
+                <span class="meta-dot"></span>
+                48 perguntas
+              </span>
+
+              <span>8 áreas da vida</span>
+              <span>10–15 min</span>
+            </div>
+          </div>
+
+          <!-- ELEMENTO VISUAL -->
+          <div class="hero-art" aria-hidden="true">
+            <div class="art-orbit orbit-one"></div>
+            <div class="art-orbit orbit-two"></div>
+
+                    <div class="art-main-circle">
+                        <div class="art-core">
+                            <img src="assets/ciee-logo.png" alt="CIEE">
+                        </div>
+                    </div>
+
+
+            <span class="art-label label-top">PERSPECTIVA</span>
+            <span class="art-label label-bottom">PROCESSO CONTÍNUO</span>
+            <span class="art-index">001 — 008</span>
+          </div>
+
+        </div>
+
+        <!-- BENEFÍCIOS -->
+        <div class="section-divider">
+          <span>O QUE VOCÊ VAI ENCONTRAR</span>
+          <span class="divider-line"></span>
+        </div>
+
+        <div class="feature-grid">
+
+          <article class="feature-card">
+            <span class="feature-number">01</span>
+            <h3>Uma visão ampla</h3>
+            <p>
+              Observe oito dimensões da sua vida sem reduzir quem você é
+              a um único número.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-number">02</span>
+            <h3>Clareza, não julgamento</h3>
+            <p>
+              Identifique padrões, forças e áreas que podem receber
+              mais cuidado.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-number">03</span>
+            <h3>Próximos passos</h3>
+            <p>
+              Transforme a reflexão em pequenas ações possíveis
+              de acompanhar.
+            </p>
+          </article>
+
+        </div>
+
+        <!-- PRIVACIDADE -->
+        <div class="privacy-note">
+          <span class="privacy-icon">◈</span>
+
+          <p>
+            <strong>Seus dados ficam aqui.</strong>
+            As respostas e o histórico são salvos no armazenamento local
+            deste navegador.
+          </p>
+        </div>
+
+      </section>
+
+      <!-- TELA DE AVALIAÇÃO -->
+      <section
+        class="view"
+        id="quiz-view"
+        aria-labelledby="question-title"
+      >
+
+        <div class="quiz-topline">
+          <button
+            class="text-button"
+            id="exit-quiz"
+            type="button"
+          >
+            ← Sair da avaliação
+          </button>
+
+          <span class="quiz-counter" id="quiz-counter">
+            01 <span>/ 48</span>
+          </span>
+        </div>
+
+        <!-- PROGRESSO -->
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <div class="quiz-category-row">
+          <span class="category-tag" id="category-tag">
+            DISCIPLINA
+          </span>
+
+          <span class="question-step" id="question-step">
+            ETAPA 01 / 08
+          </span>
+        </div>
+
+        <!-- PERGUNTA -->
+        <div class="question-content">
+          <p class="overline">REFLITA ANTES DE RESPONDER</p>
+
+          <h1 id="question-title">
+            Pergunta da avaliação
+          </h1>
+
+          <p class="question-hint" id="question-hint">
+            Pense no seu comportamento habitual, não apenas no seu melhor
+            ou pior dia.
+          </p>
+        </div>
+
+        <!-- ALTERNATIVAS -->
+        <div
+          class="options-list"
+          id="options-list"
+          role="group"
+          aria-labelledby="question-title"
+        ></div>
+
+        <!-- CONTROLES -->
+        <div class="quiz-footer">
+
+          <button
+            class="button button-secondary"
+            id="previous-button"
+            type="button"
+          >
+            ← Anterior
+          </button>
+
+          <span class="autosave-label">
+            <span class="meta-dot"></span>
+            Resposta salva nesta sessão
+          </span>
+
+          <button
+            class="button button-primary"
+            id="next-button"
+            type="button"
+            disabled
+          >
+            Próxima
+            <span aria-hidden="true">→</span>
+          </button>
+
+        </div>
+
+        <p class="quiz-footnote">
+          Não existem respostas perfeitas. Escolha a alternativa que
+          melhor representa sua realidade.
+        </p>
+
+      </section>
+
+      <!-- TELA DE RESULTADOS -->
+      <section
+        class="view"
+        id="results-view"
+        aria-labelledby="results-title"
+      >
+
+        <div class="results-heading">
+
+          <div>
+            <div class="eyebrow">
+              <span class="eyebrow-line"></span>
+              SUA REFLEXÃO, EM PERSPECTIVA
+            </div>
+
+            <p class="overline">RELATÓRIO PESSOAL</p>
+
+            <h1 id="results-title">
+              Um retrato do<br>
+              <em>seu momento.</em>
+            </h1>
+          </div>
+
+          <button
+            class="button button-secondary print-button"
+            id="print-results"
+            type="button"
+          >
+            Imprimir / PDF ↗
+          </button>
+
+        </div>
+
+        <!-- PONTUAÇÃO E GRÁFICO -->
+        <div class="score-layout">
+
+          <article class="score-card">
+            <p class="card-kicker">ÍNDICE GERAL</p>
+
+            <div class="score-number">
+              <span id="overall-score">—</span>
+              <small>/100</small>
+            </div>
+
+            <div class="score-meter">
+              <div id="overall-meter"></div>
+            </div>
+
+            <h2 id="overall-label">Resultado</h2>
+
+            <p id="overall-summary" class="muted-copy"></p>
+
+            <p class="score-disclaimer">
+              Este índice resume suas respostas; não é um diagnóstico
+              nem uma medida definitiva de quem você é.
+            </p>
+          </article>
+
+          <article class="chart-card">
+
+            <div class="card-heading">
+              <div>
+                <p class="card-kicker">VISÃO POR ÁREA</p>
+                <h2>Onde você está</h2>
+              </div>
+
+              <span class="chart-caption">0—100</span>
+            </div>
+
+            <div
+              class="category-bars"
+              id="category-bars"
+            ></div>
+
+          </article>
+
+        </div>
+
+        <!-- ANÁLISE DOS RESULTADOS -->
+        <div class="section-divider">
+          <span>LEITURA DOS RESULTADOS</span>
+          <span class="divider-line"></span>
+        </div>
+
+        <div class="insight-grid">
+
+          <!-- PONTOS FORTES -->
+          <article class="insight-card strengths-card">
+            <div class="insight-icon">↗</div>
+
+            <p class="card-kicker">PONTOS FORTES</p>
+
+            <h2>O que já funciona</h2>
+
+            <div id="strengths-list"></div>
+          </article>
+
+          <!-- PONTOS DE ATENÇÃO -->
+          <article class="insight-card focus-card">
+            <div class="insight-icon">◎</div>
+
+            <p class="card-kicker">PONTOS DE ATENÇÃO</p>
+
+            <h2>Onde investir energia</h2>
+
+            <div id="focus-list"></div>
+          </article>
+
+        </div>
+
+        <!-- PLANO DE MELHORIA -->
+        <div class="section-divider">
+          <span>SEU PLANO DE MELHORIA</span>
+          <span class="divider-line"></span>
+        </div>
+
+        <div class="plan-intro">
+          <h2>
+            Pequenos passos.<br>
+            <em>Progresso real.</em>
+          </h2>
+
+          <p>
+            Use estas sugestões como ponto de partida. Escolha o que faz
+            sentido para sua realidade e adapte sem culpa.
+          </p>
+        </div>
+
+        <div
+          class="action-list"
+          id="action-list"
+        ></div>
+
+        <!-- AÇÕES DOS RESULTADOS -->
+        <div class="results-actions">
+
+          <button
+            class="button button-primary"
+            id="save-new-evaluation"
+            type="button"
+          >
+            Salvar e fazer nova avaliação ↗
+          </button>
+
+          <button
+            class="button button-secondary"
+            id="history-button"
+            type="button"
+          >
+            Ver histórico
+          </button>
+
+          <button
+            class="text-button"
+            id="retake-button"
+            type="button"
+          >
+            Refazer esta avaliação
+          </button>
+
+        </div>
+
+      </section>
+
+      <!-- TELA DE HISTÓRICO -->
+      <section
+        class="view"
+        id="history-view"
+        aria-labelledby="history-title"
+      >
+
+        <div class="eyebrow">
+          <span class="eyebrow-line"></span>
+          SEU CAMINHO
+        </div>
+
+        <div class="history-heading">
+
+          <div>
+            <p class="overline">REGISTROS LOCAIS</p>
+
+            <h1 id="history-title">
+              Seu histórico<br>
+              <em>de evolução.</em>
+            </h1>
+          </div>
+
+          <button
+            class="text-button"
+            id="back-home"
+            type="button"
+          >
+            ← Início
+          </button>
+
+        </div>
+
+        <p class="hero-description history-description">
+          Compare seus registros ao longo do tempo. Uma avaliação é
+          apenas um recorte; a evolução aparece na continuidade.
+        </p>
+
+        <!-- RESUMO DO HISTÓRICO -->
+        <div
+          class="history-summary"
+          id="history-summary"
+        ></div>
+
+        <!-- REGISTROS -->
+        <div
+          class="history-list"
+          id="history-list"
+        ></div>
+
+        <!-- AÇÕES DO HISTÓRICO -->
+        <div class="history-bottom">
+
+          <button
+            class="button button-primary"
+            id="history-new-evaluation"
+            type="button"
+          >
+            Nova avaliação ↗
+          </button>
+
+          <button
+            class="button button-secondary danger-button"
+            id="clear-history"
+            type="button"
+          >
+            Apagar histórico
+          </button>
+
+        </div>
+
+        <p class="history-warning">
+          O histórico fica neste navegador e pode ser apagado se os dados
+          do site forem limpos. Não armazene informações sensíveis.
+        </p>
+
+      </section>
+
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="site-footer">
+      <span>
+        AUTO AVALIAÇÃO CIEE ©
+        <span id="year"></span>
+      </span>
+
+      <span>CONHECER-SE É UM PROCESSO.</span>
+    </footer>
+
+  </div>
+
+  <!-- NOTIFICAÇÕES -->
+  <div
+    class="toast"
+    id="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+  <!-- JAVASCRIPT -->
+  <script src="script.js"></script>
+
+</body>
+</html>
