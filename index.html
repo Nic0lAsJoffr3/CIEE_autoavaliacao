@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="claro">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+
+  <title>Autoavaliação</title>
+  <meta name="description"
+    content="Autoavaliação pessoal interativa com 8 áreas fixas, gráficos e prioridade de melhoria.">
+  <meta name="author" content="Nicolas Joffre">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://auto.avaliacao.nicolasjoffre.com.br/">
+  <link rel="shortcut icon" href="CIEE.ico" type="image/x-icon">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Autoavaliação">
+  <meta property="og:title" content="Autoavaliação">
+  <meta property="og:description"
+    content="Responda de 10 a 100 perguntas, visualize suas áreas e receba uma prioridade prática de melhoria.">
+  <meta property="og:url" content="https://auto.avaliacao.nicolasjoffre.com.br/">
+  <meta property="og:locale" content="pt_BR">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Autoavaliação">
+  <meta name="twitter:description" content="Autoavaliação prática com gráficos, áreas de melhoria e próximo passo.">
+  <meta name="theme-color" content="#6d28d9">
+
+  <style>
+    :root {
+      --roxo: #6d28d9;
+      --roxo-claro: #8b5cf6;
+      --roxo-suave: #ede9fe;
+      --fundo: #f7f4ff;
+      --superficie: #ffffff;
+      --texto: #1f1533;
+      --texto-suave: #4d4468;
+      --borda: #d9d0f2;
+      --foco: #312e81;
+      --erro: #b42318;
+      --erro-suave: #fee4e2;
+    }
+
+    html[data-theme="escuro"] {
+      --roxo: #a78bfa;
+      --roxo-claro: #c4b5fd;
+      --roxo-suave: #2f1e50;
+      --fundo: #0f0a1b;
+      --superficie: #191026;
+      --texto: #f6f2ff;
+      --texto-suave: #cdc2e8;
+      --borda: #3d2c61;
+      --foco: #e9d5ff;
+      --erro: #fca5a5;
+      --erro-suave: #451a1a;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(139, 92, 246, .13), transparent 38%),
+        radial-gradient(circle at 95% 8%, rgba(109, 40, 217, .1), transparent 34%),
+        var(--fundo);
+      color: var(--texto);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--foco);
+      outline-offset: 3px;
+      border-radius: 8px
+    }
+
+    .pular {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      background: var(--roxo);
+      color: #fff;
+      padding: 12px 18px;
+      z-index: 100
+    }
+
+    .pular:focus {
+      left: 0
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px clamp(14px, 4vw, 44px);
+      background: color-mix(in srgb, var(--superficie) 92%, transparent);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--borda);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .marca {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 850;
+      margin: 0;
+      font-size: 1.05rem
+    }
+
+    .marca span {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--roxo), var(--roxo-claro));
+      color: #fff;
+      border-radius: 11px;
+      font-weight: 900;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      cursor: pointer
+    }
+
+    .botao {
+      border: 2px solid var(--roxo);
+      background: linear-gradient(135deg, var(--roxo), var(--roxo-claro));
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-weight: 800;
+      transition: transform .18s ease, filter .18s ease;
+    }
+
+    .botao:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.07)
+    }
+
+    .botao:active:not(:disabled) {
+      transform: translateY(0) scale(.99)
+    }
+
+    .botao-secundario {
+      border: 2px solid var(--borda);
+      background: transparent;
+      color: var(--texto);
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 750;
+      transition: border-color .18s, transform .18s;
+    }
+
+    .botao-secundario:hover:not(:disabled) {
+      border-color: var(--roxo);
+      transform: translateY(-2px)
+    }
+
+    .botao:disabled,
+    .botao-secundario:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    main {
+      max-width: 1000px;
+      margin: auto;
+      padding: clamp(14px, 3vw, 36px)
+    }
+
+    section {
+      background: var(--superficie);
+      border: 1px solid var(--borda);
+      border-radius: 20px;
+      padding: clamp(18px, 4vw, 36px);
+      box-shadow: 0 16px 44px rgba(31, 21, 51, .08);
+    }
+
+    .escondido {
+      display: none !important
+    }
+
+    .animar {
+      animation: entrar .35s cubic-bezier(.2, .8, .2, 1) both
+    }
+
+    .animar-1 {
+      animation-delay: .05s
+    }
+
+    .animar-2 {
+      animation-delay: .1s
+    }
+
+    .animar-3 {
+      animation-delay: .15s
+    }
+
+    .animar-4 {
+      animation-delay: .2s
+    }
+
+    @keyframes entrar {
+      from {
+        opacity: 0;
+        transform: translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes pulsar {
+
+      0%,
+      100% {
+        transform: scale(1)
+      }
+
+      45% {
+        transform: scale(1.06)
+      }
+    }
+
+    @keyframes brilho {
+      0% {
+        transform: translateX(-120%)
+      }
+
+      100% {
+        transform: translateX(320%)
+      }
+    }
+
+    .hero {
+      display: grid;
+      gap: 20px
+    }
+
+    @media(min-width:780px) {
+      .hero {
+        grid-template-columns: 1.1fr .9fr;
+        align-items: center
+      }
+    }
+
+    .selo {
+      display: inline-flex;
+      align-items: center;
+      background: var(--roxo-suave);
+      color: var(--roxo);
+      padding: 6px 13px;
+      border-radius: 999px;
+      font-size: .82rem;
+      font-weight: 800;
+      width: fit-content;
+    }
+
+    html[data-theme="escuro"] .selo {
+      color: var(--roxo-claro)
+    }
+
+    h1 {
+      font-size: clamp(1.7rem, 6vw, 2.5rem);
+      line-height: 1.12;
+      margin: .5rem 0 .7rem
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      margin: 1.4rem 0 .5rem
+    }
+
+    h3 {
+      margin: 1.3rem 0 .55rem
+    }
+
+    h4 {
+      margin: .2rem 0 .45rem
+    }
+
+    p {
+      color: var(--texto-suave)
+    }
+
+    .aviso {
+      color: var(--texto);
+      font-weight: 700;
+      font-size: .95rem
+    }
+
+    .passos {
+      display: grid;
+      gap: 9px;
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none
+    }
+
+    .passos li {
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+      background: var(--roxo-suave);
+      border: 1px solid var(--borda);
+      padding: 12px 14px;
+      border-radius: 13px;
+      font-size: .95rem;
+    }
+
+    .passos b {
+      flex: none;
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      background: var(--roxo);
+      color: #fff;
+      border-radius: 8px;
+      font-size: .8rem;
+    }
+
+    .cartao-visual {
+      border: 1px solid var(--borda);
+      border-radius: 20px;
+      padding: 22px;
+      background: var(--roxo-suave);
+    }
+
+    .cartao-visual .icone {
+      width: 54px;
+      height: 54px;
+      margin-bottom: 14px;
+      display: grid;
+      place-items: center;
+      background: var(--superficie);
+      border: 1px solid var(--borda);
+      border-radius: 16px;
+    }
+
+    .cartao-visual strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 5px
+    }
+
+    .cartao-visual p {
+      margin: 0;
+      font-size: .93rem
+    }
+
+    fieldset {
+      border: 0;
+      padding: 0;
+      margin: 0
+    }
+
+    legend {
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      font-weight: 800;
+      margin-bottom: .9rem;
+      padding: 0
+    }
+
+    .slider-area {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 1.4rem;
+      background: var(--roxo-suave);
+      border: 1px solid var(--borda);
+      padding: clamp(16px, 3vw, 22px);
+      border-radius: 18px;
+    }
+
+    .slider-topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap
+    }
+
+    .slider-topo label {
+      font-weight: 800
+    }
+
+    .nivel {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--superficie);
+      border: 1px solid var(--borda);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: .92rem;
+    }
+
+    .nivel i {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--roxo);
+      animation: pulsar 1.8s ease-in-out infinite
+    }
+
+    .slider-wrapper {
+      position: relative;
+      padding-top: 6px
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 16px;
+      appearance: none;
+      background: transparent
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 14px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--roxo) var(--preenchimento, 28%), var(--borda) var(--preenchimento, 28%));
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 14px;
+      border-radius: 99px;
+      background: var(--borda)
+    }
+
+    input[type="range"]::-moz-range-progress {
+      height: 14px;
+      border-radius: 99px;
+      background: var(--roxo)
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 30px;
+      height: 30px;
+      margin-top: -8px;
+      border-radius: 50%;
+      background: var(--superficie);
+      border: 5px solid var(--roxo);
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--superficie);
+      border: 5px solid var(--roxo);
+      cursor: pointer
+    }
+
+    .marcas-slider {
+      display: flex;
+      justify-content: space-between;
+      font-size: .72rem;
+      font-weight: 750;
+      color: var(--texto-suave);
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .valor-slider {
+      min-width: 100%;
+      text-align: center;
+      font-weight: 900;
+      font-size: 1.05rem;
+      background: var(--superficie);
+      border: 1px solid var(--borda);
+      padding: 10px 16px;
+      border-radius: 13px;
+    }
+
+    @media(min-width:520px) {
+      .valor-slider {
+        min-width: 180px
+      }
+    }
+
+    .botao-iniciar {
+      width: 100%;
+      padding: 16px;
+      font-size: 1.05rem
+    }
+
+    /* Tela de perguntas: altura máxima e layout estável */
+    #tela-perguntas {
+      min-height: calc(100dvh - 150px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    #tela-perguntas.escondido {
+      display: none !important
+    }
+
+    .topo-pergunta {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+      min-height: 74px;
+    }
+
+    .badge {
+      background: var(--roxo-suave);
+      color: var(--roxo);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: .8rem;
+      width: fit-content;
+      white-space: nowrap;
+    }
+
+    html[data-theme="escuro"] .badge {
+      color: var(--roxo-claro)
+    }
+
+    /* Status com espaço reservado: evita texto dançando */
+    #status-pergunta {
+      min-height: 3.2em;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      text-align: right;
+      font-size: .9rem;
+      color: var(--texto-suave);
+    }
+
+    #status-pergunta.erro {
+      color: var(--erro);
+      background: var(--erro-suave);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .progresso {
+      height: 13px;
+      background: var(--borda);
+      border-radius: 99px;
+      overflow: hidden;
+      margin: 0 0 22px;
+      position: relative;
+    }
+
+    .progresso div {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--roxo), var(--roxo-claro));
+      transition: width .35s cubic-bezier(.2, .8, .2, 1);
+      position: relative;
+    }
+
+    .progresso div::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      width: 35%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .45), transparent);
+      animation: brilho 2.2s linear infinite;
+    }
+
+    .area-pergunta {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+      min-height: 0;
+    }
+
+    #pergunta-atual {
+      min-height: 5.2em;
+      font-size: clamp(1.15rem, 4vw, 1.55rem);
+      font-weight: 800;
+      line-height: 1.35;
+      margin-bottom: 0;
+    }
+
+    .escala {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 7px
+    }
+
+    .escala label {
+      display: grid;
+      place-items: center;
+      gap: 2px;
+      border: 2px solid var(--borda);
+      border-radius: 13px;
+      padding: clamp(14px, 3vw, 20px) 4px;
+      font-weight: 850;
+      cursor: pointer;
+      transition: border-color .15s, background .15s, transform .15s;
+    }
+
+    .escala label:hover {
+      border-color: var(--roxo);
+      transform: translateY(-2px)
+    }
+
+    .escala input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px
+    }
+
+    .escala label:has(input:checked) {
+      background: linear-gradient(135deg, var(--roxo), var(--roxo-claro));
+      border-color: transparent;
+      color: #fff;
+      animation: pulsar .3s ease;
+    }
+
+    .escala input:focus-visible+span {
+      outline: 3px solid var(--foco);
+      outline-offset: 3px;
+      border-radius: 6px
+    }
+
+    .escala-descricao {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: .75rem;
+      color: var(--texto-suave);
+      margin-top: 8px
+    }
+
+    .navegacao {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: auto;
+      padding-top: 24px;
+    }
+
+    .navegacao button {
+      width: 100%;
+      min-height: 52px;
+      padding: 12px 10px;
+      font-size: .95rem;
+    }
+
+    #botao-proxima {
+      min-width: 130px
+    }
+
+    .resumo-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 20px
+    }
+
+    @media(min-width:620px) {
+      .resumo-cards {
+        grid-template-columns: repeat(3, 1fr)
+      }
+    }
+
+    .card-resumo {
+      border: 1px solid var(--borda);
+      border-radius: 16px;
+      padding: 17px;
+      background: var(--roxo-suave);
+    }
+
+    .card-resumo h3 {
+      margin: 0 0 6px;
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--texto-suave)
+    }
+
+    .card-resumo strong {
+      display: block;
+      font-size: 1.15rem;
+      margin-bottom: 4px
+    }
+
+    .card-resumo small {
+      color: var(--texto-suave);
+      font-size: .85rem
+    }
+
+    .resultados {
+      display: grid;
+      gap: 20px;
+      margin-top: 22px
+    }
+
+    @media(min-width:820px) {
+      .resultados {
+        grid-template-columns: 1fr .95fr
+      }
+    }
+
+    .barras {
+      display: grid;
+      gap: 13px
+    }
+
+    .linha {
+      display: grid;
+      grid-template-columns: minmax(120px, 170px) 1fr 50px;
+      gap: 9px;
+      align-items: center
+    }
+
+    .nome-area {
+      font-weight: 700;
+      font-size: .9rem
+    }
+
+    .barra {
+      height: 17px;
+      background: var(--borda);
+      border-radius: 99px;
+      overflow: hidden
+    }
+
+    .barra i {
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--roxo), var(--roxo-claro));
+      transition: width .7s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .valor-area {
+      font-weight: 850;
+      text-align: right;
+      font-size: .92rem
+    }
+
+    .destaque {
+      border: 1px solid var(--borda);
+      border-left: 6px solid var(--roxo);
+      background: var(--roxo-suave);
+      padding: 18px;
+      border-radius: 16px;
+      margin-top: 20px;
+    }
+
+    .destaque h3 {
+      margin-top: 0;
+      font-size: 1.05rem
+    }
+
+    .destaque p {
+      margin-bottom: 0;
+      color: var(--texto);
+      line-height: 1.65;
+      font-size: .97rem
+    }
+
+    .destaque strong {
+      color: var(--texto)
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--borda);
+      border-radius: 16px;
+      background: var(--superficie)
+    }
+
+    .export-config {
+      border: 1px solid var(--borda);
+      border-radius: 18px;
+      padding: clamp(16px, 3vw, 22px);
+      margin-top: 22px
+    }
+
+    .config-linha {
+      display: grid;
+      gap: 16px
+    }
+
+    @media(min-width:680px) {
+      .config-linha {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    .temas-imagem,
+    .modos-imagem {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+      gap: 8px
+    }
+
+    .tema-imagem,
+    .modo-imagem {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 2px solid var(--borda);
+      border-radius: 12px;
+      padding: 11px 8px;
+      background: transparent;
+      font-weight: 750;
+      font-size: .9rem;
+    }
+
+    .tema-imagem:has(input:checked),
+    .modo-imagem:has(input:checked) {
+      border-color: var(--roxo);
+      background: var(--roxo-suave);
+    }
+
+    .tema-imagem input,
+    .modo-imagem input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px
+    }
+
+    .amostra {
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      flex: none
+    }
+
+    .preview {
+      margin-top: 20px;
+      border: 1px solid var(--borda);
+      border-radius: 18px;
+      padding: clamp(14px, 3vw, 20px);
+      background: var(--roxo-suave);
+    }
+
+    .preview canvas {
+      max-width: 100%;
+      max-height: 65vh;
+      width: auto;
+      height: auto;
+      margin: auto;
+      display: block;
+      border: 1px solid var(--borda);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .acoes {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px
+    }
+
+    .acoes .botao,
+    .acoes .botao-secundario {
+      flex: 1 1 220px
+    }
+
+    footer {
+      text-align: center;
+      color: var(--texto-suave);
+      padding: 26px 16px 34px;
+      font-size: .82rem;
+    }
+
+    footer a {
+      color: var(--texto-suave)
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        animation: none !important
+      }
+
+      .animar {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo principal</a>
+
+  <header>
+    <p class="marca"><span aria-hidden="true">A</span> Autoavaliação</p>
+    <button type="button" class="botao-secundario" id="botao-tema" aria-pressed="false">Tema escuro</button>
+  </header>
+
+  <main id="conteudo">
+    <h1 class="escondido">Autoavaliação pessoal</h1>
+
+    <section id="tela-inicio" class="animar" aria-labelledby="titulo-inicio">
+      <div class="hero">
+        <div>
+          <p class="selo">Autoavaliação pessoal</p>
+          <h1>Avalie 8 áreas e identifique uma prioridade</h1>
+          <p>
+            Responda afirmações sobre organização, constância, foco, comunicação,
+            inteligência emocional, cuidados pessoais, aprendizado e decisão.
+          </p>
+
+          <ul class="passos">
+            <li><b>1</b><span>Escolha de 10 a 100 perguntas.</span></li>
+            <li><b>2</b><span>Responda em uma escala de 1 a 5.</span></li>
+            <li><b>3</b><span>Veja gráficos e baixe a imagem do resultado.</span></li>
+          </ul>
+        </div>
+
+        <div class="cartao-visual animar animar-2">
+          <div class="icone" aria-hidden="true">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" style="color:var(--roxo)">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v5l3 2" />
+            </svg>
+          </div>
+          <strong>Como funciona</strong>
+          <p>Cada resposta contribui para uma das oito áreas fixas. O resultado mostra a pontuação de cada área.</p>
+        </div>
+      </div>
+
+      <fieldset class="animar animar-3">
+        <legend>Profundidade</legend>
+
+        <div class="slider-area">
+          <div class="slider-topo">
+            <label for="slider-quantidade">Quantidade de perguntas</label>
+            <span class="nivel"><i aria-hidden="true"></i> <span id="nivel-profundidade">Equilibrado</span></span>
+          </div>
+
+          <div class="slider-wrapper">
+            <input type="range" id="slider-quantidade" min="10" max="100" step="5" value="40"
+              aria-describedby="descricao-slider nivel-profundidade">
+          </div>
+
+          <div class="marcas-slider" aria-hidden="true">
+            <span>10<br>Leve</span>
+            <span>40<br>Equilibrado</span>
+            <span>70<br>Profundo</span>
+            <span>100<br>Completo</span>
+          </div>
+
+          <div class="slider-linha">
+            <output class="valor-slider" id="valor-quantidade" for="slider-quantidade">40 perguntas</output>
+          </div>
+
+          <p id="descricao-slider">
+            Use as setas do teclado para ajustar de 10 até 100 perguntas, em intervalos de 5.
+          </p>
+        </div>
+      </fieldset>
+
+      <button type="button" class="botao botao-iniciar animar animar-4" id="botao-iniciar">
+        Começar autoavaliação
+      </button>
+
+      <p class="aviso animar animar-4">
+        1 = discordo totalmente · 3 = neutro · 5 = concordo totalmente
+      </p>
+    </section>
+
+    <section id="tela-perguntas" class="escondido animar" aria-labelledby="pergunta-atual">
+      <div class="topo-pergunta">
+        <span class="badge" id="badge-progresso">Nível 1 de 10</span>
+        <span id="status-pergunta" role="status" aria-live="assertive"></span>
+      </div>
+
+      <div class="progresso" aria-hidden="true">
+        <div id="barra-progresso"></div>
+      </div>
+
+      <div class="area-pergunta">
+        <fieldset>
+          <legend id="pergunta-atual" tabindex="-1"></legend>
+          <div class="escala" id="escala" role="radiogroup" aria-labelledby="pergunta-atual"></div>
+          <div class="escala-descricao" aria-hidden="true">
+            <span>1 — Discordo totalmente</span>
+            <span>5 — Concordo totalmente</span>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="navegacao">
+        <button type="button" class="botao-secundario" id="botao-anterior" disabled>Anterior</button>
+        <button type="button" class="botao" id="botao-proxima">Próxima</button>
+      </div>
+    </section>
+
+    <section id="tela-resultado" class="escondido animar" tabindex="-1" aria-labelledby="titulo-resultado">
+      <p class="selo">Resultado</p>
+      <h2 id="titulo-resultado"></h2>
+      <p id="resumo-resultado"></p>
+
+      <div class="resumo-cards">
+        <div class="card-resumo animar animar-1">
+          <h3>Média geral</h3>
+          <strong id="card-media"></strong>
+          <small>Desempenho médio das 8 áreas</small>
+        </div>
+        <div class="card-resumo animar animar-2">
+          <h3>Ponto mais forte</h3>
+          <strong id="card-forte"></strong>
+          <small id="card-forte-det"></small>
+        </div>
+        <div class="card-resumo animar animar-3">
+          <h3>Prioridade</h3>
+          <strong id="card-prioridade"></strong>
+          <small id="card-prioridade-det"></small>
+        </div>
+      </div>
+
+      <div class="resultados">
+        <div class="animar animar-2">
+          <h3>Pontuação por área</h3>
+          <div class="barras" id="barras"></div>
+        </div>
+        <div class="animar animar-3">
+          <h3>Mapa das áreas</h3>
+          <canvas id="grafico" width="760" height="700" role="img"
+            aria-label="Gráfico radar com a pontuação das oito áreas fixas"></canvas>
+        </div>
+      </div>
+
+      <div class="destaque animar animar-3">
+        <h3>O que melhorar primeiro</h3>
+        <p id="prioridade"></p>
+      </div>
+
+      <div class="destaque animar animar-4">
+        <h3>Próximo passo</h3>
+        <p id="proximo-passo"></p>
+      </div>
+
+      <div class="export-config animar animar-4">
+        <h3>Imagem do resultado</h3>
+        <p>Escolha a cor e o modo da imagem. A pré-visualização mostra exatamente o PNG que será baixado.</p>
+
+        <fieldset>
+          <legend class="escondido">Configuração da imagem</legend>
+
+          <div class="config-linha">
+            <div>
+              <h4>Cor</h4>
+              <div class="temas-imagem" id="temas-imagem"></div>
+            </div>
+            <div>
+              <h4>Modo</h4>
+              <div class="modos-imagem" id="modos-imagem"></div>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="preview">
+          <h3>Pré-visualização</h3>
+          <canvas id="preview-imagem" width="1080" height="1620" role="img"
+            aria-label="Pré-visualização da imagem de resultado"></canvas>
+        </div>
+
+        <div class="acoes">
+          <button type="button" class="botao" id="botao-baixar">Baixar imagem</button>
+          <button type="button" class="botao-secundario" id="botao-recomecar">Responder novamente</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Autoavaliação · Desenvolvido por <a href="https://nicolasjoffre.com.br" rel="author">Nicolas Joffre</a>
+  </footer>
+
+  <script>
+    const AREAS = [
+      "Organização e tempo",
+      "Constância e disciplina",
+      "Foco e atenção",
+      "Comunicação e relacionamentos",
+      "Inteligência emocional",
+      "Cuidados pessoais",
+      "Aprendizado e crescimento",
+      "Decisão e resolução de problemas"
+    ];
+
+    const PERGUNTAS = [
+      // Organização e tempo — 13
+      ["Eu separo tempo para as tarefas mais importantes.", "Organização e tempo"],
+      ["Eu planejo meu dia antes de começar as atividades.", "Organização e tempo"],
+      ["Eu cumpro prazos que assumi.", "Organização e tempo"],
+      ["Eu evito acumular tarefas pendentes.", "Organização e tempo"],
+      ["Eu divido tarefas grandes em etapas menores.", "Organização e tempo"],
+      ["Eu reviso minhas prioridades quando a rotina muda.", "Organização e tempo"],
+      ["Eu mantenho compromissos registrados em um lugar confiável.", "Organização e tempo"],
+      ["Eu reservo tempo para atividades pessoais.", "Organização e tempo"],
+      ["Eu evito começar novas tarefas antes de concluir as atuais.", "Organização e tempo"],
+      ["Eu reservo momentos fixos para revisar minha semana.", "Organização e tempo"],
+      ["Eu consigo dizer não a pedidos que comprometem minha agenda.", "Organização e tempo"],
+      ["Eu antecipo tarefas antes de virarem urgentes.", "Organização e tempo"],
+      ["Eu mantenho meu espaço de trabalho ou estudo organizado.", "Organização e tempo"],
+
+      // Constância e disciplina — 13
+      ["Eu cumpro o que planejei mesmo sem motivação.", "Constância e disciplina"],
+      ["Eu mantenho hábitos úteis mesmo em semanas ocupadas.", "Constância e disciplina"],
+      ["Eu cumprimento compromissos que assumo comigo mesmo.", "Constância e disciplina"],
+      ["Eu mantenho uma rotina mínima em dias difíceis.", "Constância e disciplina"],
+      ["Eu evito abandonar um plano após o primeiro obstáculo.", "Constância e disciplina"],
+      ["Eu mantenho constância mesmo sem resultados imediatos.", "Constância e disciplina"],
+      ["Eu retomo tarefas após interrupções.", "Constância e disciplina"],
+      ["Eu cumpro combinados feitos com outras pessoas.", "Constância e disciplina"],
+      ["Eu mantenho meus horários de estudo, trabalho ou descanso.", "Constância e disciplina"],
+      ["Eu evito procrastinar tarefas importantes.", "Constância e disciplina"],
+      ["Eu mantenho compromissos financeiros sob controle.", "Constância e disciplina"],
+      ["Eu reviso meu progresso com regularidade.", "Constância e disciplina"],
+      ["Eu mantenho o objetivo ao precisar mudar o plano.", "Constância e disciplina"],
+
+      // Foco e atenção — 13
+      ["Eu mantenho o foco apesar de interrupções.", "Foco e atenção"],
+      ["Eu termino uma tarefa antes de começar outra.", "Foco e atenção"],
+      ["Eu evito distrações digitais durante tarefas importantes.", "Foco e atenção"],
+      ["Eu consigo manter a atenção em tarefas longas.", "Foco e atenção"],
+      ["Eu faço pausas planejadas durante o trabalho ou estudo.", "Foco e atenção"],
+      ["Eu consigo retomar o foco depois de uma interrupção.", "Foco e atenção"],
+      ["Eu evito fazer várias tarefas ao mesmo tempo.", "Foco e atenção"],
+      ["Eu consigo ignorar notificações quando estou concentrado.", "Foco e atenção"],
+      ["Eu defino um objetivo claro antes de começar uma tarefa.", "Foco e atenção"],
+      ["Eu percebo quando minha atenção está dispersa.", "Foco e atenção"],
+      ["Eu consigo trabalhar em ambientes com movimento.", "Foco e atenção"],
+      ["Eu evito deixar tarefas pela metade.", "Foco e atenção"],
+      ["Eu reservo blocos de tempo para tarefas que exigem concentração.", "Foco e atenção"],
+
+      // Comunicação e relacionamentos — 13
+      ["Eu explico minhas ideias de forma compreensível.", "Comunicação e relacionamentos"],
+      ["Eu pergunto antes de concluir o que alguém quis dizer.", "Comunicação e relacionamentos"],
+      ["Eu escuto sem interromper.", "Comunicação e relacionamentos"],
+      ["Eu mantenho contato com pessoas que me apoiam.", "Comunicação e relacionamentos"],
+      ["Eu peço ajuda quando necessário.", "Comunicação e relacionamentos"],
+      ["Eu peço esclarecimento quando uma instrução é vaga.", "Comunicação e relacionamentos"],
+      ["Eu cumpro combinados feitos com outras pessoas.", "Comunicação e relacionamentos"],
+      ["Eu aviso antecipadamente quando não conseguirei cumprir um prazo.", "Comunicação e relacionamentos"],
+      ["Eu pergunto o que a pessoa precisa antes de aconselhar.", "Comunicação e relacionamentos"],
+      ["Eu resolvo conflitos buscando entendimento.", "Comunicação e relacionamentos"],
+      ["Eu mantenho contato com minha família ou rede próxima.", "Comunicação e relacionamentos"],
+      ["Eu consigo dizer não sem culpa excessiva.", "Comunicação e relacionamentos"],
+      ["Eu contribuo para combinados claros no grupo.", "Comunicação e relacionamentos"],
+
+      // Inteligência emocional — 13
+      ["Eu percebo quando estou ansioso, irritado ou desanimado.", "Inteligência emocional"],
+      ["Eu mantenho a calma em discussões.", "Inteligência emocional"],
+      ["Eu reconheço sinais de estresse.", "Inteligência emocional"],
+      ["Eu uso estratégias para lidar com ansiedade.", "Inteligência emocional"],
+      ["Eu evito decisões importantes quando estou muito emocional.", "Inteligência emocional"],
+      ["Eu consigo relaxar quando necessário.", "Inteligência emocional"],
+      ["Eu reconheço quando alguém está sobrecarregado.", "Inteligência emocional"],
+      ["Eu ofereço ajuda quando percebo necessidade.", "Inteligência emocional"],
+      ["Eu consigo continuar agindo depois de um erro.", "Inteligência emocional"],
+      ["Eu consigo ver o que ainda funciona quando algo dá errado.", "Inteligência emocional"],
+      ["Eu reviso meus erros sem me punir em excesso.", "Inteligência emocional"],
+      ["Eu consigo pedir tempo antes de responder algo importante.", "Inteligência emocional"],
+      ["Eu reconheço meus limites físicos e mentais.", "Inteligência emocional"],
+
+      // Cuidados pessoais — 13
+      ["Eu durmo, como e me movo de forma suficiente.", "Cuidados pessoais"],
+      ["Eu mantenho uma rotina de sono consistente.", "Cuidados pessoais"],
+      ["Eu me movo com regularidade.", "Cuidados pessoais"],
+      ["Eu como de forma adequada para minha rotina.", "Cuidados pessoais"],
+      ["Eu faço pausas antes de chegar à exaustão.", "Cuidados pessoais"],
+      ["Eu reservo tempo para atividades que gosto.", "Cuidados pessoais"],
+      ["Eu reconheço quando estou cansado.", "Cuidados pessoais"],
+      ["Eu reservo momentos sem telas ou obrigações.", "Cuidados pessoais"],
+      ["Eu reduzo demandas quando estou sobrecarregado.", "Cuidados pessoais"],
+      ["Eu mantenho meu espaço pessoal organizado.", "Cuidados pessoais"],
+      ["Eu reservo tempo para descansar.", "Cuidados pessoais"],
+      ["Eu evito comprometer minha saúde por causa de tarefas.", "Cuidados pessoais"],
+      ["Eu percebo quando preciso mudar de ambiente.", "Cuidados pessoais"],
+
+      // Aprendizado e crescimento — 13
+      ["Eu aprendo coisas novas com regularidade.", "Aprendizado e crescimento"],
+      ["Eu tenho metas para os próximos três meses.", "Aprendizado e crescimento"],
+      ["Eu peço feedback com frequência.", "Aprendizado e crescimento"],
+      ["Eu transformo feedback em mudança concreta.", "Aprendizado e crescimento"],
+      ["Eu aprendo com situações que não saíram como esperava.", "Aprendizado e crescimento"],
+      ["Eu reconheço padrões nos meus erros.", "Aprendizado e crescimento"],
+      ["Eu sei descrever meus pontos fortes com exemplos.", "Aprendizado e crescimento"],
+      ["Eu ajusto meu comportamento quando uma crítica faz sentido.", "Aprendizado e crescimento"],
+      ["Eu reservo tempo para avaliar minha semana.", "Aprendizado e crescimento"],
+      ["Eu reviso meus objetivos periodicamente.", "Aprendizado e crescimento"],
+      ["Eu mantenho uma lista de tarefas funcional.", "Aprendizado e crescimento"],
+      ["Eu reconheço progresso, mesmo pequeno.", "Aprendizado e crescimento"],
+      ["Eu mantenho expectativas realistas sobre mim.", "Aprendizado e crescimento"],
+
+      // Decisão e resolução de problemas — 13
+      ["Eu decido mesmo sem todas as informações.", "Decisão e resolução de problemas"],
+      ["Eu evito decisões impulsivas em assuntos importantes.", "Decisão e resolução de problemas"],
+      ["Eu analiso opções antes de agir.", "Decisão e resolução de problemas"],
+      ["Eu resolvo pendências antes de virarem emergências.", "Decisão e resolução de problemas"],
+      ["Eu converso sobre assuntos desconfortáveis.", "Decisão e resolução de problemas"],
+      ["Eu começo tarefas mesmo sentindo insegurança.", "Decisão e resolução de problemas"],
+      ["Eu mudo de estratégia quando os resultados não aparecem.", "Decisão e resolução de problemas"],
+      ["Eu mantenho o objetivo ao mudar o plano.", "Decisão e resolução de problemas"],
+      ["Eu defino prazos realistas.", "Decisão e resolução de problemas"],
+      ["Eu evito deixar decisões para depois sem motivo.", "Decisão e resolução de problemas"],
+      ["Eu consigo dividir um problema em partes menores.", "Decisão e resolução de problemas"],
+      ["Eu reconheço quando preciso mudar de abordagem.", "Decisão e resolução de problemas"],
+      ["Eu mantenho a calma ao enfrentar um problema novo.", "Decisão e resolução de problemas"]
+    ];
+
+    const CORES_IMAGEM = {
+      roxo: { nome: "Roxo", primaria: "#5b21b6", secundaria: "#a78bfa" },
+      azul: { nome: "Azul", primaria: "#1e40af", secundaria: "#60a5fa" },
+      verde: { nome: "Verde", primaria: "#166534", secundaria: "#4ade80" },
+      laranja: { nome: "Laranja", primaria: "#9a3412", secundaria: "#fb923c" },
+      rosa: { nome: "Rosa", primaria: "#9d174d", secundaria: "#f472b6" },
+      grafite: { nome: "Grafite", primaria: "#18181b", secundaria: "#71717a" }
+    };
+
+    const MODOS_IMAGEM = {
+      claro: {
+        nome: "Claro",
+        roxo: { fundo: "#f8f5ff", cartao: "#ffffff", destaque: "#ede9fe", texto: "#1f1533", suave: "#4d4468", borda: "#d9d0f2" },
+        azul: { fundo: "#eff6ff", cartao: "#ffffff", destaque: "#dbeafe", texto: "#0f2440", suave: "#3b4d68", borda: "#bfdbfe" },
+        verde: { fundo: "#f0fdf4", cartao: "#ffffff", destaque: "#dcfce7", texto: "#12291c", suave: "#3f5c4a", borda: "#bbf7d0" },
+        laranja: { fundo: "#fff7ed", cartao: "#ffffff", destaque: "#ffedd5", texto: "#431407", suave: "#7c4a21", borda: "#fed7aa" },
+        rosa: { fundo: "#fff1f5", cartao: "#ffffff", destaque: "#fce7f3", texto: "#4a0e28", suave: "#7c3355", borda: "#fbcfe8" },
+        grafite: { fundo: "#f4f4f5", cartao: "#ffffff", destaque: "#e4e4e7", texto: "#18181b", suave: "#52525b", borda: "#d4d4d8" }
+      },
+      escuro: {
+        nome: "Escuro",
+        roxo: { fundo: "#0d0817", cartao: "#170f28", destaque: "#2c1a4d", texto: "#f6f2ff", suave: "#d3c6f2", borda: "#453069" },
+        azul: { fundo: "#080f1c", cartao: "#0f1c30", destaque: "#173252", texto: "#eaf2ff", suave: "#c0d3ec", borda: "#2b4a72" },
+        verde: { fundo: "#071510", cartao: "#0f241a", destaque: "#17402b", texto: "#eafaf0", suave: "#b8dcc7", borda: "#255c3e" },
+        laranja: { fundo: "#170c05", cartao: "#24150a", destaque: "#46280f", texto: "#fff4e8", suave: "#e6c5a4", borda: "#5f3a18" },
+        rosa: { fundo: "#180a11", cartao: "#25121c", destaque: "#482034", texto: "#fff0f6", suave: "#e6bfce", borda: "#5f2c44" },
+        grafite: { fundo: "#0c0c0e", cartao: "#17171a", destaque: "#2a2a2f", texto: "#f4f4f5", suave: "#c3c3c9", borda: "#3f3f46" }
+      }
+    };
+
+    const elementos = {
+      inicio: document.getElementById("tela-inicio"),
+      perguntas: document.getElementById("tela-perguntas"),
+      resultado: document.getElementById("tela-resultado"),
+      status: document.getElementById("status-pergunta"),
+      legenda: document.getElementById("pergunta-atual"),
+      escala: document.getElementById("escala"),
+      barra: document.getElementById("barra-progresso"),
+      badge: document.getElementById("badge-progresso"),
+      slider: document.getElementById("slider-quantidade"),
+      valorSlider: document.getElementById("valor-quantidade"),
+      nivel: document.getElementById("nivel-profundidade"),
+      anterior: document.getElementById("botao-anterior"),
+      proxima: document.getElementById("botao-proxima"),
+      preview: document.getElementById("preview-imagem")
+    };
+
+    let perguntasSelecionadas = [];
+    let respostas = [];
+    let atual = 0;
+    let pontuacoes = [];
+    let mediaGeral = 0;
+    let areaForte = null;
+    let areaPrioritaria = null;
+    let corImagem = "roxo";
+    let modoImagem = "claro";
+    let inicioAvaliacao = null;
+
+    const prefereEscuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    let temaAtual = prefereEscuro ? "escuro" : "claro";
+    aplicarTema();
+
+    document.getElementById("botao-tema").addEventListener("click", () => {
+      temaAtual = temaAtual === "escuro" ? "claro" : "escuro";
+      aplicarTema();
+      if (!elementos.resultado.classList.contains("escondido")) desenharGraficoTela();
+    });
+
+    function aplicarTema() {
+      document.documentElement.setAttribute("data-theme", temaAtual);
+      const botao = document.getElementById("botao-tema");
+      botao.setAttribute("aria-pressed", String(temaAtual === "escuro"));
+      botao.textContent = temaAtual === "escuro" ? "Tema claro" : "Tema escuro";
+    }
+
+    function coresDoSite() {
+      const estilos = getComputedStyle(document.documentElement);
+      return {
+        fundo: estilos.getPropertyValue("--superficie").trim(),
+        texto: estilos.getPropertyValue("--texto").trim(),
+        suave: estilos.getPropertyValue("--texto-suave").trim(),
+        borda: estilos.getPropertyValue("--borda").trim(),
+        primaria: estilos.getPropertyValue("--roxo").trim(),
+        secundaria: estilos.getPropertyValue("--roxo-claro").trim()
+      };
+    }
+
+    function nivelProfundidade(valor) {
+      if (valor <= 25) return "Leve";
+      if (valor <= 55) return "Equilibrado";
+      if (valor <= 85) return "Profundo";
+      return "Completo";
+    }
+
+    function atualizarSlider() {
+      const valor = Number(elementos.slider.value);
+      elementos.valorSlider.textContent = `${valor} perguntas`;
+      elementos.nivel.textContent = nivelProfundidade(valor);
+      elementos.slider.style.setProperty("--preenchimento", `${((valor - 10) / 90) * 100}%`);
+    }
+
+    elementos.slider.addEventListener("input", atualizarSlider);
+    atualizarSlider();
+
+    document.getElementById("botao-iniciar").addEventListener("click", () => iniciar(Number(elementos.slider.value)));
+
+    function iniciar(quantidade) {
+      // Seleciona perguntas mantendo distribuição entre as 8 áreas fixas
+      const porArea = {};
+      AREAS.forEach(area => porArea[area] = []);
+
+      PERGUNTAS.forEach(pergunta => porArea[pergunta[1]].push(pergunta));
+
+      Object.values(porArea).forEach(lista => lista.sort(() => Math.random() - .5));
+
+      const porPergunta = Math.max(1, Math.ceil(quantidade / AREAS.length));
+      perguntasSelecionadas = [];
+
+      AREAS.forEach(area => {
+        perguntasSelecionadas.push(...porArea[area].slice(0, porPergunta));
+      });
+
+      perguntasSelecionadas = perguntasSelecionadas
+        .slice(0, quantidade)
+        .sort(() => Math.random() - .5);
+
+      respostas = Array(perguntasSelecionadas.length).fill(null);
+      atual = 0;
+      inicioAvaliacao = Date.now();
+
+      mostrarTela("perguntas");
+      elementos.perguntas.focus();
+      renderizarPergunta();
+    }
+
+    function mostrarTela(nome) {
+      [elementos.inicio, elementos.perguntas, elementos.resultado].forEach(s => s.classList.add("escondido"));
+      const tela = { inicio: elementos.inicio, perguntas: elementos.perguntas, resultado: elementos.resultado }[nome];
+      tela.classList.remove("escondido");
+
+      tela.classList.remove("animar");
+      void tela.offsetWidth;
+      tela.classList.add("animar");
+
+      window.scrollTo({ top: 0 });
+    }
+
+    function limparErro() {
+      elementos.status.classList.remove("erro");
+      elementos.status.removeAttribute("role");
+    }
+
+    function mostrarErro(mensagem) {
+      elementos.status.classList.add("erro");
+      elementos.status.setAttribute("role", "alert");
+      elementos.status.textContent = mensagem;
+      elementos.escala.querySelector("input")?.focus();
+    }
+
+    function renderizarPergunta() {
+      const pergunta = perguntasSelecionadas[atual];
+      const nivel = Math.ceil(((atual + 1) / perguntasSelecionadas.length) * 10);
+
+      limparErro();
+
+      elementos.legenda.textContent = pergunta[0];
+      elementos.status.textContent = `Pergunta ${atual + 1} de ${perguntasSelecionadas.length}`;
+      elementos.badge.textContent = `Nível ${nivel} de 10`;
+      elementos.barra.style.width = `${((atual + 1) / perguntasSelecionadas.length) * 100}%`;
+
+      elementos.anterior.disabled = atual === 0;
+
+      elementos.escala.innerHTML = "";
+
+      for (let nota = 1; nota <= 5; nota++) {
+        const rotulo = document.createElement("label");
+        const input = document.createElement("input");
+        const texto = document.createElement("span");
+
+        input.type = "radio";
+        input.name = "resposta-atual";
+        input.value = nota;
+        input.checked = respostas[atual] === nota;
+        input.setAttribute("aria-label", `${nota}. ${{ 1: "Discordo totalmente", 2: "Discordo um pouco", 3: "Nem discordo nem concordo", 4: "Concordo um pouco", 5: "Concordo totalmente" }[nota]
+          }`);
+        texto.textContent = nota;
+
+        input.addEventListener("change", () => {
+          respostas[atual] = nota;
+          limparErro();
+        });
+
+        rotulo.append(input, texto);
+        elementos.escala.append(rotulo);
+      }
+
+      elementos.proxima.textContent = atual === perguntasSelecionadas.length - 1 ? "Ver resultado" : "Próxima";
+    }
+
+    elementos.anterior.addEventListener("click", () => {
+      if (atual > 0) {
+        atual--;
+        renderizarPergunta();
+        elementos.legenda.focus();
+      }
+    });
+
+    elementos.proxima.addEventListener("click", avancar);
+
+    function avancar() {
+      if (respostas[atual] === null) {
+        mostrarErro("Escolha uma opção de 1 a 5 antes de seguir.");
+        return;
+      }
+
+      if (atual < perguntasSelecionadas.length - 1) {
+        atual++;
+        renderizarPergunta();
+        elementos.legenda.focus();
+        return;
+      }
+
+      calcularResultado();
+    }
+
+    function calcularResultado() {
+      const areas = {};
+
+      AREAS.forEach(area => areas[area] = { soma: 0, maximo: 0 });
+
+      perguntasSelecionadas.forEach((pergunta, indice) => {
+        const area = pergunta[1];
+        areas[area].soma += respostas[indice];
+        areas[area].maximo += 5;
+      });
+
+      pontuacoes = AREAS.map(area => {
+        const valores = areas[area];
+        const pontuacao = valores.maximo
+          ? Math.round((valores.soma / valores.maximo) * 100)
+          : 0;
+
+        return { area, pontuacao };
+      });
+
+      mediaGeral = Math.round(pontuacoes.reduce((t, i) => t + i.pontuacao, 0) / pontuacoes.length);
+      areaForte = [...pontuacoes].sort((a, b) => b.pontuacao - a.pontuacao)[0];
+      areaPrioritaria = [...pontuacoes].sort((a, b) => a.pontuacao - b.pontuacao)[0];
+
+      document.getElementById("titulo-resultado").textContent = "Resultado da autoavaliação";
+      document.getElementById("resumo-resultado").textContent =
+        "Este resultado mostra um recorte do seu momento atual nas oito áreas avaliadas.";
+
+      document.getElementById("card-media").textContent = `${mediaGeral}%`;
+      document.getElementById("card-forte").textContent = areaForte.area;
+      document.getElementById("card-forte-det").textContent = "Maior consistência nas respostas";
+      document.getElementById("card-prioridade").textContent = areaPrioritaria.area;
+      document.getElementById("card-prioridade-det").textContent = "Maior oportunidade de melhoria";
+
+      document.getElementById("prioridade").innerHTML =
+        `<strong>${areaPrioritaria.area}</strong> é a área com maior espaço de melhoria.<br><br>` +
+        recomendacao(areaPrioritaria.area);
+
+      document.getElementById("proximo-passo").innerHTML =
+        `Escolha <strong>uma ação</strong> relacionada a ${areaPrioritaria.area} e repita-a por sete dias.<br><br>` +
+        `Use sua consistência em <strong>${areaForte.area}</strong> como apoio. No fim da semana, responda novamente e compare apenas esta área.`;
+
+      criarBarras();
+      criarSeletorImagem();
+      mostrarTela("resultado");
+      elementos.resultado.focus();
+      desenharGraficoTela();
+      atualizarPreview();
+
+      enviarDadosBackend();
+    }
+
+    function recomendacao(area) {
+      const mapa = {
+        "Organização e tempo": {
+          texto: "Sem prioridades claras, tarefas urgentes ocupam o lugar das importantes.",
+          acao: "Escolha até três prioridades por dia e comece pela primeira.",
+          exemplo: "“1) responder cliente; 2) terminar relatório; 3) revisar contas.”"
+        },
+        "Constância e disciplina": {
+          texto: "A motivação varia; ações pequenas e repetíveis sustentam o progresso.",
+          acao: "Reduza uma meta a uma ação diária de cinco minutos, em um horário fixo.",
+          exemplo: "“Estudar 20 minutos depois do café, de segunda a sexta.”"
+        },
+        "Foco e atenção": {
+          texto: "Interrupções fragmentam a atenção e aumentam o tempo das tarefas.",
+          acao: "Trabalhe em blocos curtos, sem notificações e com uma tarefa por vez.",
+          exemplo: "“25 minutos de trabalho, cinco de pausa, celular longe.”"
+        },
+        "Comunicação e relacionamentos": {
+          texto: "Mensagens claras e escuta ativa reduzem ruído e mal-entendidos.",
+          acao: "Antes de responder, confirme o ponto principal da outra pessoa.",
+          exemplo: "“Se entendi, sua preocupação é o prazo; é isso?”"
+        },
+        "Inteligência emocional": {
+          texto: "Perceber emoções cedo ajuda a escolher a reação, em vez de agir no automático.",
+          acao: "Antes de reagir, nomeie em uma frase o que sente e o que provocou isso.",
+          exemplo: "“Estou irritado porque minha opinião foi interrompida.”"
+        },
+        "Cuidados pessoais": {
+          texto: "Sono, alimentação e movimento afetam energia, humor e decisão.",
+          acao: "Escolha um hábito básico para estabilizar nesta semana.",
+          exemplo: "“Dormir no mesmo horário por sete dias.”"
+        },
+        "Aprendizado e crescimento": {
+          texto: "Feedback e revisão regular transformam experiência em melhoria.",
+          acao: "Reserve 10 minutos semanais para revisar acertos, dificuldades e ajustes.",
+          exemplo: "“O que funcionou, o que atrapalhou e o que farei diferente?”"
+        },
+        "Decisão e resolução de problemas": {
+          texto: "Problemas grandes ficam mais manejáveis quando são divididos em partes.",
+          acao: "Escolha um problema e defina três etapas com prazos.",
+          exemplo: "“Pesquisar, escrever rascunho e revisar.”"
+        }
+      };
+
+      const item = mapa[area];
+      return `${item.texto} ${item.acao} Por exemplo: ${item.exemplo}`;
+    }
+
+    function criarBarras() {
+      const container = document.getElementById("barras");
+      container.innerHTML = "";
+
+      pontuacoes.forEach((item, indice) => {
+        const linha = document.createElement("div");
+        linha.className = "linha animar";
+        linha.style.animationDelay = `${indice * .05}s`;
+
+        const nome = document.createElement("span");
+        nome.className = "nome-area";
+        nome.textContent = item.area;
+
+        const barra = document.createElement("div");
+        barra.className = "barra";
+        barra.setAttribute("role", "img");
+        barra.setAttribute("aria-label", `${item.area}: ${item.pontuacao} por cento`);
+
+        const preenchimento = document.createElement("i");
+        requestAnimationFrame(() => requestAnimationFrame(() => preenchimento.style.width = `${item.pontuacao}%`));
+        barra.append(preenchimento);
+
+        const valor = document.createElement("strong");
+        valor.className = "valor-area";
+        valor.textContent = `${item.pontuacao}%`;
+
+        linha.append(nome, barra, valor);
+        container.append(linha);
+      });
+    }
+
+    function temaImagemAtual() {
+      return {
+        ...MODOS_IMAGEM[modoImagem][corImagem],
+        primaria: CORES_IMAGEM[corImagem].primaria,
+        secundaria: CORES_IMAGEM[corImagem].secundaria
+      };
+    }
+
+    function criarSeletorImagem() {
+      const containerCores = document.getElementById("temas-imagem");
+      const containerModos = document.getElementById("modos-imagem");
+      containerCores.innerHTML = "";
+      containerModos.innerHTML = "";
+
+      Object.entries(CORES_IMAGEM).forEach(([chave, cor]) => {
+        const rotulo = document.createElement("label");
+        rotulo.className = "tema-imagem";
+
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "cor-imagem";
+        input.value = chave;
+        input.checked = chave === corImagem;
+        input.addEventListener("change", () => {
+          corImagem = chave;
+          atualizarPreview();
+        });
+
+        const amostra = document.createElement("span");
+        amostra.className = "amostra";
+        amostra.style.background = `linear-gradient(135deg, ${cor.primaria}, ${cor.secundaria})`;
+        amostra.setAttribute("aria-hidden", "true");
+
+        const texto = document.createElement("span");
+        texto.textContent = cor.nome;
+
+        rotulo.append(input, amostra, texto);
+        containerCores.append(rotulo);
+      });
+
+      Object.entries(MODOS_IMAGEM).forEach(([chave, modo]) => {
+        const rotulo = document.createElement("label");
+        rotulo.className = "modo-imagem";
+
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "modo-imagem";
+        input.value = chave;
+        input.checked = chave === modoImagem;
+        input.addEventListener("change", () => {
+          modoImagem = chave;
+          atualizarPreview();
+        });
+
+        const texto = document.createElement("span");
+        texto.textContent = modo.nome;
+
+        rotulo.append(input, texto);
+        containerModos.append(rotulo);
+      });
+    }
+
+    function desenharGraficoTela() {
+      const canvas = document.getElementById("grafico");
+      desenharRadar(canvas.getContext("2d"), canvas.width, canvas.height, false, coresDoSite());
+    }
+
+    function desenharGraficoImagem(ctx, largura, altura, tema) {
+      desenharRadar(ctx, largura, altura, true, tema);
+    }
+
+    function desenharRadar(ctx, largura, altura, paraImagem, tema) {
+      ctx.save();
+      ctx.clearRect(0, 0, largura, altura);
+
+      ctx.fillStyle = tema.fundo || "#ffffff";
+      ctx.fillRect(0, 0, largura, altura);
+
+      const centroX = largura / 2;
+      const centroY = altura / 2 + 10;
+      const raio = Math.min(largura, altura) / 2 - (paraImagem ? 95 : 100);
+      const total = pontuacoes.length;
+      const angulo = i => (Math.PI * 2 * i / total) - Math.PI / 2;
+
+      ctx.strokeStyle = tema.borda;
+      ctx.lineWidth = 1;
+
+      for (let anel = 1; anel <= 5; anel++) {
+        ctx.beginPath();
+        for (let i = 0; i < total; i++) {
+          const d = raio * anel / 5;
+          const x = centroX + Math.cos(angulo(i)) * d;
+          const y = centroY + Math.sin(angulo(i)) * d;
+          i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+      }
+
+      for (let i = 0; i < total; i++) {
+        ctx.beginPath();
+        ctx.moveTo(centroX, centroY);
+        ctx.lineTo(centroX + Math.cos(angulo(i)) * raio, centroY + Math.sin(angulo(i)) * raio);
+        ctx.stroke();
+      }
+
+      ctx.beginPath();
+      pontuacoes.forEach((item, i) => {
+        const d = raio * item.pontuacao / 100;
+        const x = centroX + Math.cos(angulo(i)) * d;
+        const y = centroY + Math.sin(angulo(i)) * d;
+        i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      });
+      ctx.closePath();
+
+      ctx.globalAlpha = .22;
+      ctx.fillStyle = tema.primaria;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      ctx.strokeStyle = tema.primaria;
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      pontuacoes.forEach((item, i) => {
+        const d = raio * item.pontuacao / 100;
+        const x = centroX + Math.cos(angulo(i)) * d;
+        const y = centroY + Math.sin(angulo(i)) * d;
+
+        ctx.beginPath();
+        ctx.arc(x, y, paraImagem ? 8 : 6, 0, Math.PI * 2);
+        ctx.fillStyle = tema.primaria;
+        ctx.fill();
+        ctx.strokeStyle = tema.fundo;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      });
+
+      pontuacoes.forEach((item, i) => {
+        const x = centroX + Math.cos(angulo(i)) * (raio + 38);
+        const y = centroY + Math.sin(angulo(i)) * (raio + 28);
+
+        ctx.fillStyle = tema.texto;
+        ctx.textAlign = "center";
+        ctx.font = `bold ${paraImagem ? 17 : 13}px system-ui, sans-serif`;
+        ctx.fillText(item.area, x, y);
+
+        ctx.fillStyle = tema.primaria;
+        ctx.fillText(`${item.pontuacao}%`, x, y + (paraImagem ? 22 : 18));
+      });
+
+      ctx.fillStyle = tema.primaria;
+      ctx.textAlign = "center";
+      ctx.font = `bold ${paraImagem ? 40 : 34}px system-ui, sans-serif`;
+      ctx.fillText(`${mediaGeral}%`, centroX, centroY + 8);
+
+      ctx.fillStyle = tema.texto;
+      ctx.font = `${paraImagem ? 18 : 15}px system-ui, sans-serif`;
+      ctx.fillText("Média geral", centroX, centroY + (paraImagem ? 34 : 34));
+
+      ctx.restore();
+    }
+
+    function atualizarPreview() {
+      const tema = temaImagemAtual();
+      const ctx = elementos.preview.getContext("2d");
+
+      ctx.clearRect(0, 0, elementos.preview.width, elementos.preview.height);
+      ctx.fillStyle = tema.fundo;
+      ctx.fillRect(0, 0, elementos.preview.width, elementos.preview.height);
+
+      desenharConteudoImagem(ctx, elementos.preview.width, elementos.preview.height, tema);
+    }
+
+    function desenharConteudoImagem(ctx, largura, altura, tema) {
+      ctx.save();
+
+      ctx.fillStyle = tema.cartao;
+      arredondar(ctx, 36, 36, largura - 72, altura - 72, 32);
+      ctx.fill();
+
+      ctx.strokeStyle = tema.borda;
+      ctx.lineWidth = 2;
+      arredondar(ctx, 36, 36, largura - 72, altura - 72, 32);
+      ctx.stroke();
+
+      ctx.fillStyle = tema.primaria;
+      ctx.font = "bold 54px system-ui, sans-serif";
+      ctx.fillText("Autoavaliação", 76, 140);
+
+      ctx.fillStyle = tema.texto;
+      ctx.font = "bold 28px system-ui, sans-serif";
+      ctx.fillText("Resultado das 8 áreas", 76, 190);
+
+      const cards = [
+        ["Média geral", `${mediaGeral}%`],
+        ["Ponto forte", areaForte.area],
+        ["Prioridade", areaPrioritaria.area]
+      ];
+
+      let cardX = 76;
+      cards.forEach(([titulo, valor]) => {
+        ctx.fillStyle = tema.destaque;
+        arredondar(ctx, cardX, 230, 290, 120, 20);
+        ctx.fill();
+
+        ctx.fillStyle = tema.suave;
+        ctx.font = "bold 17px system-ui, sans-serif";
+        ctx.fillText(titulo.toUpperCase(), cardX + 22, 270);
+
+        ctx.fillStyle = tema.texto;
+        ctx.font = "bold 20px system-ui, sans-serif";
+        escreverUmaLinha(ctx, valor, cardX + 22, 310, 246);
+
+        cardX += 310;
+      });
+
+      ctx.fillStyle = tema.primaria;
+      ctx.font = "bold 30px system-ui, sans-serif";
+      ctx.fillText("Mapa das áreas", 76, 420);
+
+      const radarCanvas = document.createElement("canvas");
+      radarCanvas.width = 928;
+      radarCanvas.height = 500;
+      desenharGraficoImagem(radarCanvas.getContext("2d"), 928, 500, tema);
+      ctx.drawImage(radarCanvas, 76, 440, 928, 500);
+
+      let y = 1010;
+      ctx.fillStyle = tema.primaria;
+      ctx.font = "bold 30px system-ui, sans-serif";
+      ctx.fillText("Pontuação por área", 76, y);
+      y += 46;
+
+      pontuacoes.forEach(item => {
+        ctx.fillStyle = tema.texto;
+        ctx.font = "bold 19px system-ui, sans-serif";
+        ctx.fillText(item.area, 76, y + 20);
+
+        ctx.fillStyle = tema.borda;
+        arredondar(ctx, 390, y, 520, 24, 12);
+        ctx.fill();
+
+        const gradiente = ctx.createLinearGradient(390, y, 910, y);
+        gradiente.addColorStop(0, tema.primaria);
+        gradiente.addColorStop(1, tema.secundaria);
+        ctx.fillStyle = gradiente;
+        arredondar(ctx, 390, y, Math.max(24, 520 * item.pontuacao / 100), 24, 12);
+        ctx.fill();
+
+        ctx.fillStyle = tema.texto;
+        ctx.font = "bold 19px system-ui, sans-serif";
+        ctx.fillText(`${item.pontuacao}%`, 920, y + 21);
+
+        y += 44;
+      });
+
+      y += 16;
+      ctx.fillStyle = tema.primaria;
+      ctx.font = "bold 28px system-ui, sans-serif";
+      ctx.fillText("O que melhorar primeiro", 76, y);
+      y += 38;
+
+      ctx.fillStyle = tema.texto;
+      ctx.font = "21px system-ui, sans-serif";
+      escreverUmaLinha(
+        ctx,
+        `${areaPrioritaria.area}: ${recomendacao(areaPrioritaria.area)}`,
+        76, y, 928
+      );
+
+      y += 52;
+      ctx.fillStyle = tema.primaria;
+      ctx.font = "bold 28px system-ui, sans-serif";
+      ctx.fillText("Próximo passo", 76, y);
+      y += 38;
+
+      ctx.fillStyle = tema.texto;
+      escreverUmaLinha(
+        ctx,
+        `Escolha uma ação de ${areaPrioritaria.area} e repita por 7 dias.`,
+        76, y, 928
+      );
+
+      ctx.restore();
+    }
+
+    document.getElementById("botao-baixar").addEventListener("click", () => {
+      const link = document.createElement("a");
+      link.download = `autoavaliacao-${corImagem}-${modoImagem}.png`;
+      link.href = elementos.preview.toDataURL("image/png");
+      link.click();
+    });
+
+    function arredondar(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function escreverUmaLinha(ctx, texto, x, y, maxWidth) {
+      let textoFinal = texto;
+
+      while (ctx.measureText(textoFinal).width > maxWidth && textoFinal.length > 4) {
+        textoFinal = textoFinal.slice(0, -2).trim() + "…";
+      }
+
+      ctx.fillText(textoFinal, x, y);
+    }
+
+    document.getElementById("botao-recomecar").addEventListener("click", () => {
+      mostrarTela("inicio");
+      document.getElementById("tela-inicio").focus();
+    });
+
+    const URL_BACKEND = "https://kupffquyjyhacochoqic.supabase.co/functions/v1/salvar-autoavaliacao";
+
+    const SUPABASE_ANON_KEY = "sb_publishable_sOR4e5chT-y5--Tt14VkGA_li_wz0zB";
+
+    async function enviarDadosBackend() {
+      const duracaoSegundos = inicioAvaliacao
+        ? Math.round((Date.now() - inicioAvaliacao) / 1000)
+        : 0;
+
+      const dados = {
+        quantidadePerguntas: perguntasSelecionadas.length,
+        respostas: respostas.map(Number),
+        pontuacoes: pontuacoes.map(item => item.pontuacao),
+        mediaGeral: mediaGeral,
+        duracaoSegundos: duracaoSegundos
+      };
+
+      try {
+        const resposta = await fetch(URL_BACKEND, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+          },
+          body: JSON.stringify(dados)
+        });
+
+        const resultado = await resposta.json();
+
+        if (!resposta.ok) {
+          console.error("Erro do backend:", resultado);
+          return null;
+        }
+
+        console.info("Autoavaliação salva:", resultado.id);
+        return resultado.id;
+      } catch (erro) {
+        console.error("Falha ao enviar para o backend:", erro);
+        return null;
+      }
+    }
+  </script>
+</body>
+
+</html>
